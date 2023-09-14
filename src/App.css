@@ -15,7 +15,51 @@ body{
   font-size: 22px;
   position: relative;
 }
+.taskBg div{
+  display: flex;
+  align-items: center;
+}
 .taskBg .done .taskText{
   text-decoration: line-through;
   opacity: 0.3;
+  
 }
+
+.taskBg .taskText{
+  flex: 1;
+}
+.taskNumber{
+  color: #999;
+  border: 1px solid #999;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  text-align: center;
+  font-size: 15px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.taskBg .iconsWrap{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 15px;
+  width: auto;
+  display: inline-block;
+}
+
+.taskBg .iconsWrap span{
+  margin: 0px 10px 0 10px;
+  display: inline-block;
+  cursor: pointer;
+  color: wheat;
+}
+
+.taskBg .iconsWrap span:hover {
+  color: white;
+  
+ }

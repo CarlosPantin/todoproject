@@ -1,104 +1,143 @@
-
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import AddTaskForm from './components/TaskForm.jsx';
 import UpdateForm from './components/UpdateForm.jsx';
-import ToDo from './components/ToDo.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck, faPen, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 
 
 function App() {
-  
   const [task, setTask] = useState([]);
-  const [newTask, setNewTask]= useState('');
-  const [updateData, setUpdateData]= useState('');
-  //add task
-  const addTask = () =>{
-    if(newTask){
-      let num = task.length + 1;
-      let newEntry = {id: num, title: newTask, status: false}
-      setTask([...task, newEntry])
+  const [newTask, setNewTask] = useState('');
+  const [updateData, setUpdateData] = useState('');
+
+  useEffect(() => {
+    try {
+      const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      console.log('Loaded tasks from local storage:', storedTasks);
+      setTask(storedTasks);
+    } catch (error) {
+      console.error('Error loading tasks from local storage:', error);
+    }
+  }, []);
+  
+
+  useEffect(() => {
+    console.log('Saving tasks to local storage:', task);
+    localStorage.setItem('tasks', JSON.stringify(task));
+  }, [task]);
+
+  const addTask = () => {
+    if (newTask) {
+      const num = task.length + 1;
+      const newEntry = { id: num, title: newTask, status: false };
+      setTask([...task, newEntry]);
       setNewTask('');
     }
   }
-  //delete task
-  const deleteTask = (id) =>{
-    let newTasks = task.filter(task => task.id !== id)
+
+  const deleteTask = (id) => {
+    const newTasks = task.filter(taskItem => taskItem.id !== id);
     setTask(newTasks);
   }
-  //mark task as done
-  const completeTask = (id) =>{
-    const newTask = task.map(task => {
-      if(task.id === id){
-        return({...task, status: !task.status})
-      }
-      return task;
-    })
-    setTask(newTask);
 
+  const completeTask = (id) => {
+    const newTasks = task.map(taskItem => {
+      if (taskItem.id === id) {
+        return { ...taskItem, status: !taskItem.status };
+      }
+      return taskItem;
+    });
+    setTask(newTasks);
   }
-  //cancel update
-  const cancelUpdate = () =>{
+
+  const cancelUpdate = () => {
     setUpdateData('');
   }
-  //Change task for update
-  const changeTask = (e) =>{
-    let newEntry = {
+
+  const changeTask = (e) => {
+    const newEntry = {
       id: updateData.id,
       title: e.target.value,
-      status: updateData.status ? true : false
-    }
+      status: updateData.status ? true : false,
+    };
     setUpdateData(newEntry);
   }
-  //Update task
-  const updateTask = () =>{
-    let filterRecords = [...task].filter(task => task.id !== updateData.id);
-    let updatedObject = [...filterRecords, updateData]
+
+  const updateTask = () => {
+    const updatedObject = task.map((t) =>
+      t.id === updateData.id ? updateData : t
+    );
     setTask(updatedObject);
     setUpdateData('');
-  }
-
-
+  };
 
   return (
     <div className="container App">
-      <br></br>
+      <br />
       <h2>Daily To Do List App!!</h2>
-      <br></br>
-
-       
-       {updateData && updateData  ? (
-        <UpdateForm 
-        updateData ={updateData}
-        changeTask ={changeTask} 
-        updateTask ={updateTask}
-        cancelUpdate ={cancelUpdate}
+      <br />
+  
+      {updateData && updateData ? (
+        <UpdateForm
+          updateData={updateData}
+          changeTask={changeTask}
+          updateTask={updateTask}
+          cancelUpdate={cancelUpdate}
         />
-       ) : (
-      
-        <AddTaskForm 
-        newTask={newTask}
-        setNewTask={setNewTask}
-        addTask={addTask}
+      ) : (
+        <AddTaskForm
+          newTask={newTask}
+          setNewTask={setNewTask}
+          addTask={addTask}
         />
-       )}
-      
-
-
-       
-
-
-      
-      {task && task.length ? '' : 'No tasks...'}
-     <ToDo
-      task={task}
-      completeTask={completeTask}
-      setUpdateData={setUpdateData}
-      deleteTask={deleteTask}
-     />
-
+      )}
+  
+  {task.length === 0 ? (
+  <p>No tasks...</p>
+) : (
+  <div>
+    {task
+      .sort((a, b) => (a.id > b.id ? 1 : -1))
+      .map((task, index) => {
+        console.log('Rendering task:', task); // Add this line
+        return (
+          <div key={task.id} className="col taskBg">
+            <div className={task.status ? 'done' : ''}>
+              <span className="taskNumber">{index + 1}</span>
+              <span className="taskText">{task.title}</span>
+            </div>
+            <div className="iconsWrap">
+              <span title="Completed / Not Completed" onClick={() => completeTask(task.id)}>
+                <FontAwesomeIcon icon={faCircleCheck} />
+              </span>
+              {task.status ? null : (
+                <span
+                  title="Edit"
+                  onClick={() =>
+                    setUpdateData({
+                      id: task.id,
+                      title: task.title,
+                      status: task.status ? true : false,
+                    })
+                  }
+                >
+                  <FontAwesomeIcon icon={faPen} />
+                </span>
+              )}
+              <span title="Delete" onClick={() => deleteTask(task.id)}>
+                <FontAwesomeIcon icon={faTrashCan} />
+              </span>
+            </div>
+          </div>
+        );
+      })}
+  </div>
+)}
     </div>
   );
+  
 }
 
 export default App;

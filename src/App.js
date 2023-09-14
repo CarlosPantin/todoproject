@@ -7,17 +7,22 @@ import './App.css';
 
 
 function App() {
-  
-  const [task, setTask] = useState([]);
-  console.log(task)
+  const storedTasks = JSON.parse(localStorage.getItem('name'))
+  const [task, setTask] = useState([storedTasks]);
   useEffect(() => {
-    localStorage.setItem('task', JSON.stringify(task))
-    JSON.parse(localStorage.getItem('task'))
-    const storedItems=JSON.parse (localStorage.getItem('task'))
-    console.log(storedItems)
+    // localStorage.setItem('key', JSON.stringify(value))
+    // store items state in localStorage
+    // make the key 'items' and for the value, pass our
+    // items state.
+    localStorage.setItem('name', JSON.stringify(task))
     
+    // const retrievedValue = JSON.parse(localStorage.getItem('key'))
+    // use getItems to retrieve our "items" from localStorage
+    // assign that to a new const called "storedItems"
+    // console.log storedItems
   }, [task])
-
+  
+  
   const [newTask, setNewTask]= useState('');
   const [updateData, setUpdateData]= useState('');
   //add task
@@ -71,7 +76,7 @@ function App() {
   return (
     <div className="container App">
       <br></br>
-      <h2>Daily To Do List App</h2>
+      <h2>Daily To Do List App!!</h2>
       <br></br>
 
        

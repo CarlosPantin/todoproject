@@ -1,3 +1,4 @@
+
 import React, {useState,useEffect} from 'react';
 import AddTaskForm from './components/TaskForm.jsx';
 import UpdateForm from './components/UpdateForm.jsx';
@@ -7,14 +8,14 @@ import './App.css';
 
 
 function App() {
-  const storedTasks = JSON.parse(localStorage.getItem('name'))
+  const storedTasks = JSON.parse(localStorage.getItem('task'))
   const [task, setTask] = useState([storedTasks]);
   useEffect(() => {
     // localStorage.setItem('key', JSON.stringify(value))
     // store items state in localStorage
     // make the key 'items' and for the value, pass our
     // items state.
-    localStorage.setItem('name', JSON.stringify(task))
+    localStorage.setItem('task', JSON.stringify(task))
     
     // const retrievedValue = JSON.parse(localStorage.getItem('key'))
     // use getItems to retrieve our "items" from localStorage
